@@ -1,12 +1,15 @@
-import React from 'react';
-import logo from './logo.svg';
 import './App.css';
 
+import { QueryClient, QueryClientProvider, useQuery } from 'react-query';
+import Inner from './components/Inner';
+
 function App() {
+  const queryClient = new QueryClient()
+
   return (
-    <div className="App">
-      Hello React Query!
-    </div>
+    <QueryClientProvider client={queryClient}>
+      <Inner />
+    </QueryClientProvider>
   );
 }
 
