@@ -1,7 +1,7 @@
 import './App.css';
-
-import { QueryClient, QueryClientProvider, useQuery } from 'react-query';
+import { QueryClient, QueryClientProvider } from 'react-query';
 import Inner from './components/Inner';
+import { ReactQueryDevtools } from 'react-query/devtools';
 
 function App() {
   const queryClient = new QueryClient()
@@ -9,6 +9,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <Inner />
+      <ReactQueryDevtools />
     </QueryClientProvider>
   );
 }
