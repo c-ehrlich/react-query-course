@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { useState } from 'react';
 import { useQuery } from 'react-query';
 
 type PokemonListType = {
@@ -26,6 +27,10 @@ const Inner = () => {
       // queries that are still fresh / not stale yet
       // don't refetch on window focus etc. default 0, max Infinity
       staleTime: 5000,
+      // inactive state: query not being used on screen becomes
+      // inactive, but is cached until the cacheTime runs out
+      // default: ~5 minutes
+      cacheTime: 1000000,
     }
   );
 
