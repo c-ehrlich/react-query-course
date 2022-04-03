@@ -8,6 +8,11 @@ type PokemonListType = {
   url: string;
 };
 
+type LocationListType = {
+  name: string;
+  url: string;
+}
+
 function App() {
   const queryClient = new QueryClient();
 
@@ -15,6 +20,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <Count />
       <Pokemon />
+      <Berries />
       <ReactQueryDevtools />
     </QueryClientProvider>
   );
@@ -52,9 +58,32 @@ function usePokemon() {
 
 const Count = () => {
   const queryInfo = usePokemon();
-
+  
   return <h3>You are looking at {queryInfo.data?.length} Pokemon</h3>;
 };
+
+const Berries = () => {
+  const queryInfo = useQuery<LocationListType[]>('berries', async () => {
+    await new Promise(resolve => setTimeout(resolve, 1000))
+    return axios.get('https://pokeapi.co/api/v2/berry')
+    .then(res => res.data.results)
+  })
+
+  if (queryInfo.isLoading) return <div>'Loading...'</div>;
+
+  if (queryInfo.isError) return <div>'Error'</div>;
+
+  return (
+    <div>
+      <h3>You are looking at {queryInfo.data?.length} berries</h3>
+      {queryInfo.data!.map((result) => {
+        return <div key={result.name}>{result.name}</div>;
+      })}
+      <br />
+      {queryInfo.isFetching ? <div>'Updating...'</div> : null}
+    </div>
+  );
+}
 
 const Pokemon = () => {
   const queryInfo = usePokemon();
