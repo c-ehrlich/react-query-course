@@ -11,14 +11,23 @@ const Inner = () => {
   // 1. a name for the query
   // 2. an api
   //    - need to make sure your data arrives as json!
-  const queryInfo = useQuery<PokemonListType[]>('pokemon', async () => {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    return axios
-      .get('https://pokeapi.co/api/v2/pokemon')
-      .then((res) => res.data.results);
-  });
-
-  console.log(queryInfo);
+  const queryInfo = useQuery<PokemonListType[]>(
+    'pokemon',
+    async () => {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      return axios
+        .get('https://pokeapi.co/api/v2/pokemon')
+        .then((res) => res.data.results);
+    },
+    {
+      // this is TRUE by default because users often
+      // open tabs and then ignore them for a while
+      refetchOnWindowFocus: true,
+      // queries that are still fresh / not stale yet
+      // don't refetch on window focus etc. default 0, max Infinity
+      staleTime: 5000,
+    }
+  );
 
   if (queryInfo.isLoading) return <div>'Loading...'</div>;
 
@@ -29,6 +38,8 @@ const Inner = () => {
       {queryInfo.data!.map((result) => {
         return <div key={result.name}>{result.name}</div>;
       })}
+      <br />
+      {queryInfo.isFetching ? <div>'Updating...'</div> : null}
     </div>
   );
 };
