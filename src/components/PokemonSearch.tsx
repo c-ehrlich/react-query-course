@@ -21,13 +21,22 @@ export default PokemonSearch;
 const PokemonSearchResults = ({ pokemon }: { pokemon: string }) => {
   // should probably debounce this
   const queryInfo = useQuery<PokemonInfo>(
-    // Multi part query key
-    // Very useful in the dev tools!
     ['pokemon', pokemon],
     async () => {
-      return axios
-        .get(`http://pokeapi.co/api/v2/pokemon/${pokemon}`)
+      const source = axios.CancelToken.source();
+
+      // TODO don't cast to any - but promise.cancel complains by default
+      const promise: any = axios
+        .get(`http://pokeapi.co/api/v2/pokemon/${pokemon}`, {
+          cancelToken: source.token,
+        })
         .then((res) => res.data);
+
+      promise.cancel = () => {
+        source.cancel('Query was cancelled by React Query');
+      };
+
+      return promise;
     },
     {
       // Default is 3
