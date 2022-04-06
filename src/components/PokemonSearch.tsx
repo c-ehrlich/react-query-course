@@ -22,30 +22,16 @@ const PokemonSearchResults = ({ pokemon }: { pokemon: string }) => {
   // should probably debounce this
   const queryInfo = useQuery<PokemonInfo>(
     ['pokemon', pokemon],
-    async () => {
-      const source = axios.CancelToken.source();
-
-      // TODO don't cast to any - but promise.cancel complains by default
-      const promise: any = axios
+    async ({ signal }) => {
+      return axios
         .get(`http://pokeapi.co/api/v2/pokemon/${pokemon}`, {
-          cancelToken: source.token,
+          signal
         })
         .then((res) => res.data);
-
-      promise.cancel = () => {
-        source.cancel('Query was cancelled by React Query');
-      };
-
-      return promise;
     },
     {
-      // Default is 3
-      // each retry waits longer than the one before by default
       retry: 1,
-      // How long to wait between retries
-      // Can give a number (ms) or a function, for example in this case exponential or 30s
       retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
-      // only run if 'pokemon' is truthy
       enabled: pokemon !== '',
     }
   );
