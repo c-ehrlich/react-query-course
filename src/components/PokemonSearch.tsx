@@ -19,16 +19,22 @@ export default PokemonSearch;
 
 const PokemonSearchResults = ({ pokemon }: { pokemon: string }) => {
   // should probably debounce this
-  const queryInfo = useQuery<PokemonInfo>(`${pokemon}`, async () => {
-    return axios
-      .get(`http://pokeapi.co/api/v2/pokemon/${pokemon}`)
-      .then((res) => res.data);
-  }, {
-    // only run if 'pokemon' is truthy
-    enabled: pokemon !== '',
-  });
+  const queryInfo = useQuery<PokemonInfo>(
+    // Multi part query key
+    // Very useful in the dev tools!
+    ['pokemon', pokemon],
+    async () => {
+      return axios
+        .get(`http://pokeapi.co/api/v2/pokemon/${pokemon}`)
+        .then((res) => res.data);
+    },
+    {
+      // only run if 'pokemon' is truthy
+      enabled: pokemon !== '',
+    }
+  );
 
-  if (pokemon === '') return <div>type name to search</div>
+  if (pokemon === '') return <div>type name to search</div>;
   if (queryInfo.isError) return <div>Error</div>;
   if (queryInfo.isFetching) return <div>Fetching</div>;
   if (!queryInfo.data?.sprites?.front_default)
