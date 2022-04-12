@@ -2,16 +2,25 @@ import './App.css';
 import { QueryClientProvider, QueryClient, useQuery } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import axios from 'axios';
+import existingUser from './existingUser';
 
 // we need the userId before we can query for the user object
 // user email: 'Sincere@april.biz';
 const email: string = 'Sincere@april.biz';
 
 function MyPosts() {
-  const userQuery = useQuery('user', () =>
-    axios
-      .get(`https://jsonplaceholder.typicode.com/users?email=${email}`)
-      .then((res) => res.data[0])
+  const userQuery = useQuery(
+    'user',
+    () =>
+      axios
+        .get(`https://jsonplaceholder.typicode.com/users?email=${email}`)
+        .then((res) => res.data[0]),
+    {
+      // we have access to this before the react query request even starts
+      // avoid first loading state
+      // this is super powerful
+      initialData: existingUser,
+    }
   );
 
   const postsQuery = useQuery(
