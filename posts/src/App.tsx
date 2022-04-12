@@ -1,26 +1,57 @@
-import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import { QueryClientProvider, QueryClient, useQuery } from 'react-query';
+import { ReactQueryDevtools } from 'react-query/devtools';
+import axios from 'axios';
 
-function App() {
+// we need the userId before we can query for the user object
+// user email: 'Sincere@april.biz';
+const email: string = 'Sincere@april.biz';
+
+function MyPosts() {
+  const userQuery = useQuery('user', () =>
+    axios
+      .get(`https://jsonplaceholder.typicode.com/users?email=${email}`)
+      .then((res) => res.data[0])
+  );
+
+  const postsQuery = useQuery(
+    'posts',
+    () =>
+      axios
+        .get(
+          `https://jsonplaceholder.typicode.com/posts?useId=${userQuery.data.id}`
+        )
+        .then((res) => res.data),
+    {
+      // only run when this condition is met
+      enabled: Boolean(userQuery?.data?.id),
+    }
+  );
+
+  if (userQuery.isLoading) return <div>Loading user...</div>;
+  if (userQuery.data && userQuery.data.id)
+    return (
+      <div>
+        <div>User ID: {userQuery.data.id}</div>
+        <br />
+        {postsQuery.isIdle ? null : postsQuery.isLoading ? (
+          'Loading posts...'
+        ) : (
+          <div>Post count: {postsQuery.data?.length}</div>
+        )}
+      </div>
+    );
+  return <div>help</div>;
+}
+
+export default function App() {
+  const queryClient = new QueryClient();
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className='App'>
+      <QueryClientProvider client={queryClient}>
+        <MyPosts />
+        <ReactQueryDevtools />
+      </QueryClientProvider>
     </div>
   );
 }
-
-export default App;
