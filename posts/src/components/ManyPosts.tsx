@@ -1,10 +1,10 @@
 import axios from 'axios';
 import { useReducer } from 'react';
-import { useQuery, useQueryClient } from 'react-query';
+import { useQuery } from 'react-query';
 import { Post } from '../types';
 import { Link } from 'react-router-dom';
 
-const fetchPosts = async () => {
+export const fetchPosts = async () => {
   await new Promise((resolve) => setTimeout(resolve, 1000));
   const posts: Post[] = await axios
     .get('https://jsonplaceholder.typicode.com/posts')

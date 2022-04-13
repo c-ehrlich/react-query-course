@@ -1,13 +1,19 @@
 import { QueryClientProvider, QueryClient, useQueryClient } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import SinglePost from './components/SinglePost';
-import ManyPosts from './components/ManyPosts';
+import ManyPosts, { fetchPosts } from './components/ManyPosts';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { useReducer } from 'react';
+import { useEffect, useReducer } from 'react';
 
 export function Content() {
-  const [show, toggle] = useReducer((d) => !d, true);
+  const [show, toggle] = useReducer((d) => !d, false);
   const queryClient = useQueryClient();
+
+  useEffect(() => {
+    // prefetch the posts query
+    queryClient.prefetchQuery('posts', fetchPosts);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <>
