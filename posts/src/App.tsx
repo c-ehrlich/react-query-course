@@ -17,7 +17,10 @@ export function Content() {
         refetchActive: false,
         // refetch even if the data is not currently being used
         refetchInactive: true,
-      })}>Invalidate</button>
+      })}>Invalidate Posts List</button>
+      <button onClick={() => queryClient.invalidateQueries('post', {
+        refetchInactive: true,
+      })}>Invalidate all individual posts</button>
       {show ? (
         <Routes>
           <Route path='/post/:id' element={<SinglePost />} />
