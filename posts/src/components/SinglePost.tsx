@@ -16,6 +16,7 @@ function SinglePost() {
   const { id } = useParams();
 
   const postQuery = useQuery<Post, Error>(['post', id], () => getSinglePost(id || ''), {
+    staleTime: 1000 * 10,
     // // GETTING initialData
     // // we already have the post data from the 'posts' query, so we can use that
     // // until the 'post' query comes in

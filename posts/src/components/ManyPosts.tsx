@@ -58,6 +58,9 @@ function ManyPosts() {
                         ['post', String(post.id)],
                         () => {
                           return getSinglePost(String(post.id));
+                        },
+                        {
+                          staleTime: 1000 * 60 * 60, // 1 hour
                         }
                       )
                     }

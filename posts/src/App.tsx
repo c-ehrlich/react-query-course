@@ -12,21 +12,33 @@ export function Content() {
   useEffect(() => {
     // prefetch the posts query
     queryClient.prefetchQuery('posts', fetchPosts);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <>
       <button onClick={toggle}>{show ? 'hide' : 'show'}</button>
-      <button onClick={() => queryClient.invalidateQueries('posts', {
-        // just marks the query as stale instead of immediately refetching
-        refetchActive: false,
-        // refetch even if the data is not currently being used
-        refetchInactive: true,
-      })}>Invalidate Posts List</button>
-      <button onClick={() => queryClient.invalidateQueries('post', {
-        refetchInactive: true,
-      })}>Invalidate all individual posts</button>
+      <button
+        onClick={() =>
+          queryClient.invalidateQueries('posts', {
+            // just marks the query as stale instead of immediately refetching
+            refetchActive: false,
+            // refetch even if the data is not currently being used
+            refetchInactive: true,
+          })
+        }
+      >
+        Invalidate Posts List
+      </button>
+      <button
+        onClick={() =>
+          queryClient.invalidateQueries('post', {
+            refetchInactive: true,
+          })
+        }
+      >
+        Invalidate all individual posts
+      </button>
       {show ? (
         <Routes>
           <Route path='/post/:id' element={<SinglePost />} />
