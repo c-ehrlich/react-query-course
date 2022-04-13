@@ -1,4 +1,3 @@
-import './App.css';
 import { QueryClientProvider, QueryClient, useQuery } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import axios from 'axios';
@@ -41,7 +40,7 @@ function MyPosts() {
   if (userQuery.data && userQuery.data.id)
     return (
       <div>
-        <div>User ID: {userQuery.data.id}</div>
+        <pre>{JSON.stringify(userQuery.data, null, 2)}</pre>
         <br />
         {postsQuery.isIdle ? null : postsQuery.isLoading ? (
           'Loading posts...'
