@@ -6,7 +6,6 @@ import { useParams } from 'react-router';
 
 function SinglePost() {
   const { id } = useParams();
-  // const queryClient = useQueryClient();
 
   const postQuery = useQuery<Post, Error>(
     ['post', id],

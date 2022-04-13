@@ -19,7 +19,6 @@ const fetchPosts = async () => {
 }
 
 function ManyPosts() {
-  const queryClient = useQueryClient();
   const [count, increment] = useReducer(d => d + 1, 0);
 
   const postsQuery = useQuery<Post[], Error>(
@@ -34,8 +33,10 @@ function ManyPosts() {
       // onSettled: (da ta, error) => {} runs on both success and error
       // these run everytime the query is run, ie if we use it in 4 components
       // then it gets run 4 times
-      refetchInterval: 1000 * 5, // refetch after 5 seconds while focus
-      refetchIntervalInBackground: true, // also refetch when tab is in background
+      
+      // refetchInterval: 1000 * 5, // refetch after 5 seconds while focus
+      // refetchIntervalInBackground: true, // also refetch when tab is in background
+      staleTime: Infinity,
     }
   );
 
@@ -44,7 +45,7 @@ function ManyPosts() {
     <div>
       <h1>Posts{postsQuery.isFetching && '...'}</h1>
       <h4>Fetched {count} times</h4>
-      <button onClick={() => queryClient.invalidateQueries('posts')}>Invalidate</button>
+      
       <div>
         {postsQuery.isLoading || postsQuery.isError || postsQuery.isIdle ? (
           <div>'Loading posts...'</div>
