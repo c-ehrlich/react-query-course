@@ -34,6 +34,8 @@ function ManyPosts() {
       // onSettled: (da ta, error) => {} runs on both success and error
       // these run everytime the query is run, ie if we use it in 4 components
       // then it gets run 4 times
+      refetchInterval: 1000 * 5, // refetch after 5 seconds while focus
+      refetchIntervalInBackground: true, // also refetch when tab is in background
     }
   );
   return (
