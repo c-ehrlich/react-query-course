@@ -15,17 +15,20 @@ function SinglePost({
     ['post', postId],
     async () => {
       await new Promise((resolve) => setTimeout(resolve, 1000));
-      return axios
+      const post = await axios
         .get(`https://jsonplaceholder.typicode.com/posts/${postId}`)
         .then((res) => res.data);
+      return post
     },
     {
-      // we already have the post data from the 'posts' query, so we can use that
-      // until the 'post' query comes in
-      initialData: () => {
-        const data = queryClient.getQueryData<Post[]>('posts');
-        return data ? data.find(post => post.id === postId) : undefined;
-      },
+      // // GETTING initialData
+      // // we already have the post data from the 'posts' query, so we can use that
+      // // until the 'post' query comes in
+      // // this is a 'pull' sort of operation
+      // initialData: () => {
+      //   const data = queryClient.getQueryData<Post[]>('posts');
+      //   return data ? data.find(post => post.id === postId) : undefined;
+      // },
     }
   );
 

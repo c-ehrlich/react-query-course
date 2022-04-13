@@ -1,16 +1,23 @@
 import axios from 'axios';
-import { useQuery } from 'react-query';
+import { useQuery, useQueryClient } from 'react-query';
 import { Post } from '../types';
 
 function ManyPosts({ setPostId }: { setPostId: (num: number) => void }) {
-  // https://jsonplaceholder.typicode.com/posts
+  const queryClient = useQueryClient();
   const postsQuery = useQuery<Post[], Error>(
     'posts',
     async () => {
       await new Promise((resolve) => setTimeout(resolve, 1000));
-      return axios
+      const posts: Post[] = await axios
         .get('https://jsonplaceholder.typicode.com/posts')
         .then((res) => res.data);
+
+      // iterate over posts and optimistically push into query cache
+      posts.forEach((post) => {
+        queryClient.setQueryData(['post', post.id], post);
+      });
+
+      return posts;
     },
     {
       cacheTime: 60 * 60 * 1000,
