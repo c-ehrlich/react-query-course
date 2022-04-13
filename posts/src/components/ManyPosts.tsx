@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { useReducer } from 'react';
-import { useQuery } from 'react-query';
+import { useQuery, useQueryClient } from 'react-query';
 import { Post } from '../types';
 import { Link } from 'react-router-dom';
 
@@ -19,7 +19,7 @@ const fetchPosts = async () => {
 }
 
 function ManyPosts() {
-  // const queryClient = useQueryClient();
+  const queryClient = useQueryClient();
   const [count, increment] = useReducer(d => d + 1, 0);
 
   const postsQuery = useQuery<Post[], Error>(
@@ -38,10 +38,13 @@ function ManyPosts() {
       refetchIntervalInBackground: true, // also refetch when tab is in background
     }
   );
+
+  
   return (
     <div>
-      <h1>Posts</h1>
+      <h1>Posts{postsQuery.isFetching && '...'}</h1>
       <h4>Fetched {count} times</h4>
+      <button onClick={() => queryClient.invalidateQueries('posts')}>Invalidate</button>
       <div>
         {postsQuery.isLoading || postsQuery.isError || postsQuery.isIdle ? (
           <div>'Loading posts...'</div>
