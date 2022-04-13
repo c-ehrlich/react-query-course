@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useQuery } from 'react-query';
+import { QueryClient, useQuery, useQueryClient } from 'react-query';
 import { Post } from '../types';
 
 function SinglePost({
@@ -9,12 +9,25 @@ function SinglePost({
   postId: number;
   setPostId: (num: number) => void;
 }) {
-  const postQuery = useQuery<Post, Error>(['post', postId], async () => {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    return axios
-      .get(`https://jsonplaceholder.typicode.com/posts/${postId}`)
-      .then((res) => res.data);
-  });
+  const queryClient = useQueryClient();
+
+  const postQuery = useQuery<Post, Error>(
+    ['post', postId],
+    async () => {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      return axios
+        .get(`https://jsonplaceholder.typicode.com/posts/${postId}`)
+        .then((res) => res.data);
+    },
+    {
+      // we already have the post data from the 'posts' query, so we can use that
+      // until the 'post' query comes in
+      initialData: () => {
+        const data = queryClient.getQueryData<Post[]>('posts');
+        return data ? data.find(post => post.id === postId) : undefined;
+      },
+    }
+  );
 
   return (
     <div>
@@ -26,6 +39,7 @@ function SinglePost({
       ) : (
         <div>
           <h1>{postQuery.data?.title}</h1>
+          <div>{postQuery.data?.body}</div>
           {postQuery.isFetching && 'Updating...'}
         </div>
       )}
