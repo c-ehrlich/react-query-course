@@ -1,22 +1,19 @@
 import axios from 'axios';
-import { QueryClient, useQuery, useQueryClient } from 'react-query';
+import {  useQuery } from 'react-query';
 import { Post } from '../types';
+import { Link } from 'react-router-dom';
+import { useParams } from 'react-router';
 
-function SinglePost({
-  postId,
-  setPostId,
-}: {
-  postId: number;
-  setPostId: (num: number) => void;
-}) {
-  const queryClient = useQueryClient();
+function SinglePost() {
+  const { id } = useParams();
+  // const queryClient = useQueryClient();
 
   const postQuery = useQuery<Post, Error>(
-    ['post', postId],
+    ['post', id],
     async () => {
       await new Promise((resolve) => setTimeout(resolve, 1000));
       const post = await axios
-        .get(`https://jsonplaceholder.typicode.com/posts/${postId}`)
+        .get(`https://jsonplaceholder.typicode.com/posts/${id}`)
         .then((res) => res.data);
       return post
     },
@@ -34,9 +31,9 @@ function SinglePost({
 
   return (
     <div>
-      <a onClick={() => setPostId(-1)} href='#'>
+      <Link to="/">
         back
-      </a>
+      </Link>
       {postQuery.isLoading ? (
         'Loading...'
       ) : (

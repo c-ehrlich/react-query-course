@@ -1,20 +1,15 @@
-import { QueryClientProvider, QueryClient, useQuery } from 'react-query';
+import { QueryClientProvider, QueryClient } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
-import { useState } from 'react';
 import SinglePost from './components/SinglePost';
 import ManyPosts from './components/ManyPosts';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 export function Content() {
-  const [postId, setPostId] = useState<number>(-1);
-
   return (
-    <>
-      {postId > -1 ? (
-        <SinglePost postId={postId} setPostId={setPostId} />
-      ) : (
-        <ManyPosts setPostId={setPostId} />
-      )}
-    </>
+    <Routes>
+        <Route path="/post/:id" element={<SinglePost />} />
+        <Route path="/" element={<ManyPosts />} />
+    </Routes>
   );
 }
 
@@ -23,10 +18,12 @@ export default function App() {
 
   return (
     <div className='App'>
-      <QueryClientProvider client={queryClient}>
-        <Content />
-        <ReactQueryDevtools />
-      </QueryClientProvider>
+      <BrowserRouter>
+        <QueryClientProvider client={queryClient}>
+          <Content />
+          <ReactQueryDevtools />
+        </QueryClientProvider>
+      </BrowserRouter>
     </div>
   );
 }

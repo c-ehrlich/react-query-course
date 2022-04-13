@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { useReducer } from 'react';
-import { useQuery, useQueryClient } from 'react-query';
+import { useQuery } from 'react-query';
 import { Post } from '../types';
+import { Link } from 'react-router-dom';
 
 const fetchPosts = async () => {
   await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -17,7 +18,7 @@ const fetchPosts = async () => {
   return posts;
 }
 
-function ManyPosts({ setPostId }: { setPostId: (num: number) => void }) {
+function ManyPosts() {
   // const queryClient = useQueryClient();
   const [count, increment] = useReducer(d => d + 1, 0);
 
@@ -48,9 +49,9 @@ function ManyPosts({ setPostId }: { setPostId: (num: number) => void }) {
               {postsQuery.data.map((post) => {
                 return (
                   <li key={post.id}>
-                    <a onClick={() => setPostId(post.id)} href='#'>
+                    <Link to={`/post/${post.id}`}>
                       {post.title}
-                    </a>
+                    </Link>
                   </li>
                 );
               })}
