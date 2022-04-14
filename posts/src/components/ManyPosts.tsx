@@ -21,6 +21,9 @@ export const fetchPosts = async () => {
 
 function ManyPosts() {
   const queryClient = useQueryClient();
+  // also refetch stale queries
+  queryClient.refetchQueries({ stale: true });
+
   const [count, increment] = useReducer((d) => d + 1, 0);
 
   const postsQuery = useQuery<Post[], Error>('posts', fetchPosts, {
@@ -61,7 +64,12 @@ function ManyPosts() {
                         },
                         {
                           staleTime: 1000 * 60 * 60, // 1 hour
-                        }
+                        },
+
+                        /**
+                         * TKTK see if someone answered my question about the { force: true } object
+                         */
+
                       )
                     }
                   >
