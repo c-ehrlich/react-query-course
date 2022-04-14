@@ -3,16 +3,32 @@ import Link from 'next/link';
 import { useQuery } from 'react-query';
 import axios from 'axios';
 import IPost from '../types/Post';
+import React, { FC } from 'react';
 
-const fetchPosts = async () => {
+const fetchPosts = async (): Promise<IPost[]> => {
   await new Promise((r) => setTimeout(r, 500));
   return axios
     .get('https://jsonplaceholder.typicode.com/posts')
     .then((res) => res.data.slice(0, 10));
 };
 
-const Posts: NextPage = () => {
-  const postsQuery = useQuery<IPost[]>(['posts'], fetchPosts);
+export const getServerSideProps = async () => {
+  const posts = await fetchPosts()
+  
+  return {
+    props: { posts, }
+  }
+}
+
+interface PageProps {
+  posts: IPost[];
+}
+
+const Posts: FC<PageProps> = ({ posts }: { posts: IPost[] }) => {
+  const postsQuery = useQuery<IPost[]>(['posts'], fetchPosts, {
+    initialData: posts,
+    // refetchOnMount: true, //if we want to refetch when the user gets the page
+  });
 
   return (
     <section>
