@@ -24,9 +24,9 @@ interface PageProps {
   posts: IPost[];
 }
 
-const Posts: FC<PageProps> = ({ posts }: { posts: IPost[] }) => {
+const Posts: FC<PageProps> = (props: PageProps) => {
   const postsQuery = useQuery<IPost[]>(['posts'], fetchPosts, {
-    initialData: posts,
+    initialData: props.posts,
     // refetchOnMount: true, //if we want to refetch when the user gets the page
   });
 
